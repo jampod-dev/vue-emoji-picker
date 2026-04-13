@@ -22,6 +22,7 @@
   import Vue, { PropType } from 'vue'
   import emojis from './emojis'
 
+
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
   const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -31,6 +32,7 @@
       y: number
       visible: boolean
     }
+    loadedKeywords: Record<string, readonly string[]> | null
   }
 
   type ClickOutsideElement = HTMLElement & { __vueClickOutside__: ((e: MouseEvent) => void) | null }
@@ -50,6 +52,11 @@
           return emojis
         },
       },
+      extendedSearch: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
     data(): Data {
       return {
@@ -58,6 +65,19 @@
           y: 0,
           visible: false,
         },
+        loadedKeywords: null,
+      }
+    },
+    watch: {
+      extendedSearch: {
+        immediate: true,
+        handler(val: boolean) {
+          if (val && !this.loadedKeywords) {
+            import('./keywords').then(m => {
+              this.loadedKeywords = m.default as Record<string, readonly string[]>
+            })
+          }
+        }
       }
     },
     computed: {
@@ -65,12 +85,23 @@
         if (this.search) {
           const obj: Record<string, Record<string, string>> = {}
 
-          for (const category in this.emojiTable) {
+          const table = this.emojiTable as Record<string, Record<string, string>>
+
+          for (const category in table) {
             obj[category] = {}
 
-            for (const emoji in this.emojiTable[category]) {
-              if (new RegExp(`.*${escapeRegExp(this.search)}.*`).test(emoji)) {
-                obj[category][emoji] = this.emojiTable[category][emoji]
+            for (const emoji in table[category]) {
+              const searchRegex = new RegExp(`.*${escapeRegExp(this.search)}.*`, 'i')
+              const matchesName = searchRegex.test(emoji)
+              
+              let matchesKeyword = false
+              if (this.extendedSearch && this.loadedKeywords) {
+                const keywords = this.loadedKeywords[emoji] || []
+                matchesKeyword = keywords.some(keyword => searchRegex.test(keyword))
+              }
+
+              if (matchesName || matchesKeyword) {
+                obj[category][emoji] = table[category][emoji]
               }
             }
 

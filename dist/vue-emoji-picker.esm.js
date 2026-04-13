@@ -675,7 +675,12 @@ var script = /*#__PURE__*/Vue.extend({
     dynamicFrequentlyUsed: {
       type: Boolean,
       required: false,
-      default: true
+      default: false
+    },
+    frequentlyUsedEmojis: {
+      type: Object,
+      required: false,
+      default: () => ({})
     }
   },
   data() {
@@ -686,7 +691,7 @@ var script = /*#__PURE__*/Vue.extend({
         visible: false
       },
       loadedKeywords: null,
-      frequentlyUsedEmojis: []
+      trackedEmojis: []
     };
   },
   watch: {
@@ -703,13 +708,18 @@ var script = /*#__PURE__*/Vue.extend({
   },
   computed: {
     localEmojiTable() {
-      if (!this.dynamicFrequentlyUsed) {
+      const hasCustomFrequentlyUsed = Object.keys(this.frequentlyUsedEmojis).length > 0;
+      if (!this.dynamicFrequentlyUsed && !hasCustomFrequentlyUsed) {
         return this.emojiTable;
       }
       const table = {
         ...this.emojiTable
       };
-      const defaultFrequentlyUsed = table['Frequently used'] || {};
+      const defaultFrequentlyUsed = hasCustomFrequentlyUsed ? this.frequentlyUsedEmojis : table['Frequently used'] || {};
+      if (!this.dynamicFrequentlyUsed) {
+        table['Frequently used'] = defaultFrequentlyUsed;
+        return table;
+      }
       const newFrequentlyUsed = {};
       const added = new Set();
       const charToKey = {};
@@ -719,7 +729,7 @@ var script = /*#__PURE__*/Vue.extend({
           charToKey[table[cat][key]] = key;
         }
       }
-      for (const emoji of this.frequentlyUsedEmojis) {
+      for (const emoji of this.trackedEmojis) {
         const key = charToKey[emoji] || emoji;
         newFrequentlyUsed[key] = emoji;
         added.add(emoji);
@@ -801,7 +811,7 @@ var script = /*#__PURE__*/Vue.extend({
         }
       }
       const sorted = Object.keys(freq || {}).sort((a, b) => freq[b] - freq[a]);
-      this.frequentlyUsedEmojis = sorted.slice(0, 7);
+      this.trackedEmojis = sorted.slice(0, 7);
     },
     toggle(e) {
       this.display.visible = !this.display.visible;

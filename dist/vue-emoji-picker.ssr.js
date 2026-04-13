@@ -811,7 +811,14 @@ var script = /*#__PURE__*/Vue__default["default"].extend({
     dynamicFrequentlyUsed: {
       type: Boolean,
       required: false,
-      default: true
+      default: false
+    },
+    frequentlyUsedEmojis: {
+      type: Object,
+      required: false,
+      default: function _default() {
+        return {};
+      }
     }
   },
   data: function data() {
@@ -822,7 +829,7 @@ var script = /*#__PURE__*/Vue__default["default"].extend({
         visible: false
       },
       loadedKeywords: null,
-      frequentlyUsedEmojis: []
+      trackedEmojis: []
     };
   },
   watch: {
@@ -840,11 +847,16 @@ var script = /*#__PURE__*/Vue__default["default"].extend({
   },
   computed: {
     localEmojiTable: function localEmojiTable() {
-      if (!this.dynamicFrequentlyUsed) {
+      var hasCustomFrequentlyUsed = Object.keys(this.frequentlyUsedEmojis).length > 0;
+      if (!this.dynamicFrequentlyUsed && !hasCustomFrequentlyUsed) {
         return this.emojiTable;
       }
       var table = _objectSpread2({}, this.emojiTable);
-      var defaultFrequentlyUsed = table['Frequently used'] || {};
+      var defaultFrequentlyUsed = hasCustomFrequentlyUsed ? this.frequentlyUsedEmojis : table['Frequently used'] || {};
+      if (!this.dynamicFrequentlyUsed) {
+        table['Frequently used'] = defaultFrequentlyUsed;
+        return table;
+      }
       var newFrequentlyUsed = {};
       var added = new Set();
       var charToKey = {};
@@ -854,7 +866,7 @@ var script = /*#__PURE__*/Vue__default["default"].extend({
           charToKey[table[cat][key]] = key;
         }
       }
-      var _iterator = _createForOfIteratorHelper(this.frequentlyUsedEmojis),
+      var _iterator = _createForOfIteratorHelper(this.trackedEmojis),
         _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -953,7 +965,7 @@ var script = /*#__PURE__*/Vue__default["default"].extend({
       var sorted = Object.keys(freq || {}).sort(function (a, b) {
         return freq[b] - freq[a];
       });
-      this.frequentlyUsedEmojis = sorted.slice(0, 7);
+      this.trackedEmojis = sorted.slice(0, 7);
     },
     toggle: function toggle(e) {
       this.display.visible = !this.display.visible;
@@ -1108,7 +1120,7 @@ var __vue_inject_styles__ = undefined;
 /* scoped */
 var __vue_scope_id__ = undefined;
 /* module identifier */
-var __vue_module_identifier__ = "data-v-0d2a4342";
+var __vue_module_identifier__ = "data-v-23c53204";
 /* functional template */
 var __vue_is_functional_template__ = false;
 /* style inject */

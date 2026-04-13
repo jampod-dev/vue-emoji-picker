@@ -125,8 +125,17 @@ To see what is possible with the component, you can simply have a look at a demo
 ## Available props
 - `search` _optional_ - If you are not using the search functionality, you can omit this one. It should be a model of the search passed from your `data`.
 - `emojiTable` _optional_ - You can overwrite the [default](https://github.com/DCzajkowski/vue-emoji-picker/blob/master/src/emojis.ts) emoji table by providing your own.
-- `extendedSearch` _optional_ - Enables searching emoji by keyword as well as by name (e.g. 'meh', 'blank', or 'flat' will resolve to the `neutral_face` emoji).
+- `extendedSearch` _optional_ - Enables searching emoji by keyword as well as by name (e.g. 'meh', 'blank', or 'flat' will resolve to the `neutral_face` emoji).\
+- `dynamicFrequentlyUsed` _optional_ - Enables dynamic frequently used emojis. This will store the frequently used emojis in the local storage and update the emoji table with the most frequently used emojis.
+- `frequentlyUsedEmojis` _optional_ - Pre-set frequently used emojis. This will be replace the standard frequently used emojis in the emoji table. The format should be: 
 
+```
+{
+  'thumbs_up': '👍',    
+  'sob': '😭',
+  'confused': '😕'    
+}
+```
 ## Slots
 - `emoji-invoker`
   - `events` - delares the `v-on:click` toggle of the picker box,

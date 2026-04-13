@@ -33,7 +33,7 @@
       visible: boolean
     }
     loadedKeywords: Record<string, readonly string[]> | null
-    frequentlyUsedEmojis: string[]
+    trackedEmojis: string[]
   }
 
   type ClickOutsideElement = HTMLElement & { __vueClickOutside__: ((e: MouseEvent) => void) | null }
@@ -63,6 +63,11 @@
         required: false,
         default: false,
       },
+      frequentlyUsedEmojis: {
+        type: Object as PropType<Record<string, string>>,
+        required: false,
+        default: () => ({}),
+      },
     },
     data(): Data {
       return {
@@ -72,7 +77,7 @@
           visible: false,
         },
         loadedKeywords: null,
-        frequentlyUsedEmojis: [],
+        trackedEmojis: [],
       }
     },
     watch: {
@@ -89,13 +94,21 @@
     },
     computed: {
       localEmojiTable(): Record<string, Record<string, string>> {
-        if (!this.dynamicFrequentlyUsed) {
+        const hasCustomFrequentlyUsed = Object.keys(this.frequentlyUsedEmojis).length > 0
+        if (!this.dynamicFrequentlyUsed && !hasCustomFrequentlyUsed) {
           return this.emojiTable as Record<string, Record<string, string>>
         }
 
         const table = { ...(this.emojiTable as Record<string, Record<string, string>>) }
-        const defaultFrequentlyUsed = table['Frequently used'] || {}
+        const defaultFrequentlyUsed = hasCustomFrequentlyUsed 
+          ? this.frequentlyUsedEmojis 
+          : (table['Frequently used'] || {})
         
+        if (!this.dynamicFrequentlyUsed) {
+          table['Frequently used'] = defaultFrequentlyUsed as Record<string, string>
+          return table
+        }
+
         const newFrequentlyUsed: Record<string, string> = {}
         const added = new Set<string>()
 
@@ -107,7 +120,7 @@
           }
         }
 
-        for (const emoji of this.frequentlyUsedEmojis) {
+        for (const emoji of this.trackedEmojis) {
            const key = charToKey[emoji] || emoji
            newFrequentlyUsed[key] = emoji
            added.add(emoji)
@@ -199,7 +212,7 @@
           }
         }
         const sorted = Object.keys(freq || {}).sort((a, b) => (freq![b] - freq![a]))
-        this.frequentlyUsedEmojis = sorted.slice(0, 7)
+        this.trackedEmojis = sorted.slice(0, 7)
       },
       toggle(e: MouseEvent): void {
         this.display.visible = ! this.display.visible

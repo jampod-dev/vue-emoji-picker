@@ -1,5 +1,109 @@
 import Vue from 'vue';
 
+function _arrayLikeToArray(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
+}
+function _createForOfIteratorHelper(r, e) {
+  var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+  if (!t) {
+    if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) {
+      t && (r = t);
+      var n = 0,
+        F = function () {};
+      return {
+        s: F,
+        n: function () {
+          return n >= r.length ? {
+            done: !0
+          } : {
+            done: !1,
+            value: r[n++]
+          };
+        },
+        e: function (r) {
+          throw r;
+        },
+        f: F
+      };
+    }
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  var o,
+    a = !0,
+    u = !1;
+  return {
+    s: function () {
+      t = t.call(r);
+    },
+    n: function () {
+      var r = t.next();
+      return a = r.done, r;
+    },
+    e: function (r) {
+      u = !0, o = r;
+    },
+    f: function () {
+      try {
+        a || null == t.return || t.return();
+      } finally {
+        if (u) throw o;
+      }
+    }
+  };
+}
+function _defineProperty(e, r, t) {
+  return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
+    value: t,
+    enumerable: !0,
+    configurable: !0,
+    writable: !0
+  }) : e[r] = t, e;
+}
+function ownKeys(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function (r) {
+      return Object.getOwnPropertyDescriptor(e, r).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread2(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys(Object(t), !0).forEach(function (r) {
+      _defineProperty(e, r, t[r]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) {
+      Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r));
+    });
+  }
+  return e;
+}
+function _toPrimitive(t, r) {
+  if ("object" != typeof t || !t) return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r || "default");
+    if ("object" != typeof i) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r ? String : Number)(t);
+}
+function _toPropertyKey(t) {
+  var i = _toPrimitive(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _unsupportedIterableToArray(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+  }
+}
+
 var emojis = {
   'Frequently used': {
     'thumbs_up': '👍',
@@ -651,7 +755,9 @@ var emojis = {
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
-const escapeRegExp = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+var escapeRegExp = function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
 var script = /*#__PURE__*/Vue.extend({
   name: 'EmojiPicker',
   props: {
@@ -663,7 +769,7 @@ var script = /*#__PURE__*/Vue.extend({
     emojiTable: {
       type: Object,
       required: false,
-      default() {
+      default: function _default() {
         return emojis;
       }
     },
@@ -680,10 +786,12 @@ var script = /*#__PURE__*/Vue.extend({
     frequentlyUsedEmojis: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: function _default() {
+        return {};
+      }
     }
   },
-  data() {
+  data: function data() {
     return {
       display: {
         x: 0,
@@ -697,72 +805,86 @@ var script = /*#__PURE__*/Vue.extend({
   watch: {
     extendedSearch: {
       immediate: true,
-      handler(val) {
+      handler: function handler(val) {
+        var _this = this;
         if (val && !this.loadedKeywords) {
-          Promise.resolve().then(function () { return keywords$1; }).then(m => {
-            this.loadedKeywords = m.default;
+          Promise.resolve().then(function () { return keywords$1; }).then(function (m) {
+            _this.loadedKeywords = m.default;
           });
         }
       }
     }
   },
   computed: {
-    localEmojiTable() {
-      const hasCustomFrequentlyUsed = Object.keys(this.frequentlyUsedEmojis).length > 0;
+    localEmojiTable: function localEmojiTable() {
+      var hasCustomFrequentlyUsed = Object.keys(this.frequentlyUsedEmojis).length > 0;
       if (!this.dynamicFrequentlyUsed && !hasCustomFrequentlyUsed) {
         return this.emojiTable;
       }
-      const table = {
-        ...this.emojiTable
-      };
-      const defaultFrequentlyUsed = hasCustomFrequentlyUsed ? this.frequentlyUsedEmojis : table['Frequently used'] || {};
+      var table = _objectSpread2({}, this.emojiTable);
+      var defaultFrequentlyUsed = hasCustomFrequentlyUsed ? this.frequentlyUsedEmojis : table['Frequently used'] || {};
       if (!this.dynamicFrequentlyUsed) {
         table['Frequently used'] = defaultFrequentlyUsed;
         return table;
       }
-      const newFrequentlyUsed = {};
-      const added = new Set();
-      const charToKey = {};
-      for (const cat in table) {
+      var newFrequentlyUsed = {};
+      var added = new Set();
+      var charToKey = {};
+      for (var cat in table) {
         if (cat === 'Frequently used') continue;
-        for (const key in table[cat]) {
+        for (var key in table[cat]) {
           charToKey[table[cat][key]] = key;
         }
       }
-      for (const emoji of this.trackedEmojis) {
-        const key = charToKey[emoji] || emoji;
-        newFrequentlyUsed[key] = emoji;
-        added.add(emoji);
-        if (Object.keys(newFrequentlyUsed).length >= 7) break;
+      var _iterator = _createForOfIteratorHelper(this.trackedEmojis),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _emoji = _step.value;
+          var _key2 = charToKey[_emoji] || _emoji;
+          newFrequentlyUsed[_key2] = _emoji;
+          added.add(_emoji);
+          if (Object.keys(newFrequentlyUsed).length >= 7) break;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
-      for (const key in defaultFrequentlyUsed) {
+      for (var _key in defaultFrequentlyUsed) {
         if (Object.keys(newFrequentlyUsed).length >= 7) break;
-        const emoji = defaultFrequentlyUsed[key];
+        var emoji = defaultFrequentlyUsed[_key];
         if (!added.has(emoji)) {
-          newFrequentlyUsed[key] = emoji;
+          newFrequentlyUsed[_key] = emoji;
           added.add(emoji);
         }
       }
       table['Frequently used'] = newFrequentlyUsed;
       return table;
     },
-    emojis() {
+    emojis: function emojis() {
+      var _this2 = this;
       if (this.search) {
-        const obj = {};
-        const table = this.localEmojiTable;
-        for (const category in table) {
+        var obj = {};
+        var table = this.localEmojiTable;
+        for (var category in table) {
           obj[category] = {};
-          for (const emoji in table[category]) {
-            const searchRegex = new RegExp(`.*${escapeRegExp(this.search)}.*`, 'i');
-            const matchesName = searchRegex.test(emoji);
-            let matchesKeyword = false;
-            if (this.extendedSearch && this.loadedKeywords) {
-              const keywords = this.loadedKeywords[emoji] || [];
-              matchesKeyword = keywords.some(keyword => searchRegex.test(keyword));
+          var _loop = function _loop() {
+            var searchRegex = new RegExp(".*".concat(escapeRegExp(_this2.search), ".*"), 'i');
+            var matchesName = searchRegex.test(emoji);
+            var matchesKeyword = false;
+            if (_this2.extendedSearch && _this2.loadedKeywords) {
+              var keywords = _this2.loadedKeywords[emoji] || [];
+              matchesKeyword = keywords.some(function (keyword) {
+                return searchRegex.test(keyword);
+              });
             }
             if (matchesName || matchesKeyword) {
               obj[category][emoji] = table[category][emoji];
             }
+          };
+          for (var emoji in table[category]) {
+            _loop();
           }
           if (Object.keys(obj[category]).length === 0) {
             delete obj[category];
@@ -774,17 +896,17 @@ var script = /*#__PURE__*/Vue.extend({
     }
   },
   methods: {
-    insert(emoji) {
+    insert: function insert(emoji) {
       this.$emit('emoji', emoji);
       if (this.dynamicFrequentlyUsed) {
         this.trackEmoji(emoji);
       }
     },
-    trackEmoji(emoji) {
+    trackEmoji: function trackEmoji(emoji) {
       try {
-        const storageKey = 'vue-emoji-picker-frequent';
-        const stored = localStorage.getItem(storageKey);
-        let freq = {};
+        var storageKey = 'vue-emoji-picker-frequent';
+        var stored = localStorage.getItem(storageKey);
+        var freq = {};
         if (stored) {
           try {
             freq = JSON.parse(stored);
@@ -797,10 +919,10 @@ var script = /*#__PURE__*/Vue.extend({
         // localStorage might not be available
       }
     },
-    updateFrequentlyUsedEmojis(freq) {
+    updateFrequentlyUsedEmojis: function updateFrequentlyUsedEmojis(freq) {
       if (!freq) {
         try {
-          const stored = localStorage.getItem('vue-emoji-picker-frequent');
+          var stored = localStorage.getItem('vue-emoji-picker-frequent');
           if (stored) {
             freq = JSON.parse(stored);
           } else {
@@ -810,18 +932,20 @@ var script = /*#__PURE__*/Vue.extend({
           freq = {};
         }
       }
-      const sorted = Object.keys(freq || {}).sort((a, b) => freq[b] - freq[a]);
+      var sorted = Object.keys(freq || {}).sort(function (a, b) {
+        return freq[b] - freq[a];
+      });
       this.trackedEmojis = sorted.slice(0, 7);
     },
-    toggle(e) {
+    toggle: function toggle(e) {
       this.display.visible = !this.display.visible;
       this.display.x = e.clientX;
       this.display.y = e.clientY;
     },
-    hide() {
+    hide: function hide() {
       this.display.visible = false;
     },
-    escape(e) {
+    escape: function escape(e) {
       if (this.display.visible === true && e.keyCode === 27) {
         this.display.visible = false;
       }
@@ -829,12 +953,12 @@ var script = /*#__PURE__*/Vue.extend({
   },
   directives: {
     'click-outside': {
-      bind(el, binding) {
+      bind: function bind(el, binding) {
         if (typeof binding.value !== 'function') {
           return;
         }
-        const bubble = binding.modifiers.bubble;
-        const handler = e => {
+        var bubble = binding.modifiers.bubble;
+        var handler = function handler(e) {
           if (bubble || !el.contains(e.target) && el !== e.target) {
             binding.value(e);
           }
@@ -842,7 +966,7 @@ var script = /*#__PURE__*/Vue.extend({
         el.__vueClickOutside__ = handler;
         document.addEventListener('click', handler);
       },
-      unbind(el) {
+      unbind: function unbind(el) {
         if (el.__vueClickOutside__ !== null) {
           document.removeEventListener('click', el.__vueClickOutside__);
           el.__vueClickOutside__ = null;
@@ -850,13 +974,13 @@ var script = /*#__PURE__*/Vue.extend({
       }
     }
   },
-  mounted() {
+  mounted: function mounted() {
     document.addEventListener('keyup', this.escape);
     if (this.dynamicFrequentlyUsed) {
       this.updateFrequentlyUsedEmojis();
     }
   },
-  destroyed() {
+  destroyed: function destroyed() {
     document.removeEventListener('keyup', this.escape);
   }
 });
@@ -937,16 +1061,16 @@ function normalizeComponent(template, style, script, scopeId, isFunctionalTempla
 }
 
 /* script */
-const __vue_script__ = script;
+var __vue_script__ = script;
 
 /* template */
-var __vue_render__ = function () {
+var __vue_render__ = function __vue_render__() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
   return _c('div', [_vm._t("emoji-invoker", null, {
     "events": {
-      click: function (e) {
+      click: function click(e) {
         return _vm.toggle(e);
       }
     }
@@ -966,27 +1090,27 @@ var __vue_render__ = function () {
 var __vue_staticRenderFns__ = [];
 
 /* style */
-const __vue_inject_styles__ = undefined;
+var __vue_inject_styles__ = undefined;
 /* scoped */
-const __vue_scope_id__ = undefined;
+var __vue_scope_id__ = undefined;
 /* module identifier */
-const __vue_module_identifier__ = undefined;
+var __vue_module_identifier__ = undefined;
 /* functional template */
-const __vue_is_functional_template__ = false;
+var __vue_is_functional_template__ = false;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-const __vue_component__ = /*#__PURE__*/normalizeComponent({
+var __vue_component__ = /*#__PURE__*/normalizeComponent({
   render: __vue_render__,
   staticRenderFns: __vue_staticRenderFns__
 }, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
 
-var entry_esm = /*#__PURE__*/(() => {
-  const installable = __vue_component__;
-  installable.install = Vue => {
+var entry_esm = /*#__PURE__*/(function () {
+  var installable = __vue_component__;
+  installable.install = function (Vue) {
     Vue.component('EmojiPicker', installable);
   };
   return installable;

@@ -12,11 +12,13 @@ import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
-// Get browserslist config and remove ie from es build targets
+// Get browserslist config — keep all targets (including IE) so that
+// the ESM build transpiles modern syntax (object spread, etc.) to
+// ES5-compatible output consumable by any bundler without extra config.
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
   .toString()
   .split('\n')
-  .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
+  .filter((entry) => entry && entry.trim().length > 0);
 
 // Extract babel preset-env config, to combine with esbrowserslist
 const babelPresetEnvConfig = require('./babel.config')

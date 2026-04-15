@@ -2,8 +2,7 @@
   "name": "vue-emoji-picker",
   "description": "Simple Vue.js emoji picker with unicode characters",
   "version": "1.0.3",
-  "main": "dist/vue-emoji-picker.ssr.js",
-  "browser": "dist/vue-emoji-picker.esm.js",
+  "main": "dist/vue-emoji-picker.umd.js",
   "module": "dist/vue-emoji-picker.esm.js",
   "unpkg": "dist/vue-emoji-picker.min.js",
   "types": "dist/types/src/entry.esm.d.ts",
@@ -11,7 +10,7 @@
     "serve": "vue-cli-service serve dev/serve.ts",
     "prebuild": "rimraf ./dist",
     "build": "cross-env NODE_ENV=production rollup --config rollup.config.js",
-    "build:ssr": "cross-env NODE_ENV=production rollup --config rollup.config.js --format cjs",
+    "build:umd": "cross-env NODE_ENV=production rollup --config rollup.config.js --format umd",
     "build:es": "cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config rollup.config.js --format iife",
     "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts"

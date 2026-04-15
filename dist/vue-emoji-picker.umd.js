@@ -1,4 +1,4 @@
-'use strict';var Vue=require('vue');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var Vue__default=/*#__PURE__*/_interopDefaultLegacy(Vue);function _arrayLikeToArray(r, a) {
+(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(exports,require('vue')):typeof define==='function'&&define.amd?define(['exports','vue'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.EmojiPicker={},g.Vue));})(this,(function(exports,Vue){'use strict';function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var Vue__default=/*#__PURE__*/_interopDefaultLegacy(Vue);function _arrayLikeToArray(r, a) {
   (null == a || a > r.length) && (a = r.length);
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
@@ -1100,7 +1100,7 @@ var __vue_render__ = function __vue_render__() {
         return _vm.toggle(e);
       }
     }
-  }), _vm._ssrNode(" "), _vm.display.visible ? _c('div', {
+  }), _vm._v(" "), _vm.display.visible ? _c('div', {
     directives: [{
       name: "click-outside",
       rawName: "v-click-outside",
@@ -1120,7 +1120,7 @@ var __vue_inject_styles__ = undefined;
 /* scoped */
 var __vue_scope_id__ = undefined;
 /* module identifier */
-var __vue_module_identifier__ = "data-v-23c53204";
+var __vue_module_identifier__ = undefined;
 /* functional template */
 var __vue_is_functional_template__ = false;
 /* style inject */
@@ -1772,4 +1772,4 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
   'large_blue_diamond': ['shape', 'jewel', 'blue'],
   'small_orange_diamond': ['shape', 'jewel', 'orange'],
   'small_blue_diamond': ['shape', 'jewel', 'blue']
-};var keywords$1=/*#__PURE__*/Object.freeze({__proto__:null,'default':keywords});module.exports=component;
+};var keywords$1=/*#__PURE__*/Object.freeze({__proto__:null,'default':keywords});exports["default"]=component;Object.defineProperty(exports,'__esModule',{value:true});}));

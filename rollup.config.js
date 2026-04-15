@@ -123,29 +123,23 @@ if (!argv.format || argv.format === 'es') {
   buildFormats.push(esConfig);
 }
 
-if (!argv.format || argv.format === 'cjs') {
+if (!argv.format || argv.format === 'umd') {
   const umdConfig = {
     ...baseConfig,
     external,
     output: {
       compact: true,
-      file: 'dist/vue-emoji-picker.ssr.js',
-      format: 'cjs',
+      file: 'dist/vue-emoji-picker.umd.js',
+      format: 'umd',
       name: 'EmojiPicker',
-      exports: 'auto',
+      exports: 'named',
       inlineDynamicImports: true,
       globals,
     },
     plugins: [
       replace(baseConfig.plugins.replace),
       ...baseConfig.plugins.preVue,
-      vue({
-        ...baseConfig.plugins.vue,
-        template: {
-          ...baseConfig.plugins.vue.template,
-          optimizeSSR: true,
-        },
-      }),
+      vue(baseConfig.plugins.vue),
       ...baseConfig.plugins.postVue,
       babel(baseConfig.plugins.babel),
     ],
